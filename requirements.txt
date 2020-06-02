@@ -1,0 +1,7 @@
+asyncio==3.4.3
+dnspython==1.16.0
+enum-compat==0.0.3
+eventlet @ https://github.com/eventlet/eventlet/archive/master.zip
+greenlet==0.4.15
+monotonic==1.5
+six==1.15.0
