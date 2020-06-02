@@ -18,6 +18,7 @@ async def parse_form(r):
     if r.method == 'GET':
         return 'form'
     else:
+        print(r.body)
         name = r.body.get('name', '')[0]
         password = r.body.get('password', '')[0]
 

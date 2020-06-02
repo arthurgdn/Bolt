@@ -56,7 +56,7 @@ class HTTPConnection(object):
         except Exception as e:
             logging.error(e)
             logging.error(e.__traceback__)
-            self.error_reply(500, body=Response.reason_phrases[500])
+            await self.error_reply(500, body=Response.reason_phrases[500])
 
         self.close_connection()
 
