@@ -19,7 +19,8 @@ class Response(object):
         500: 'Internal Server Error',
     }
 
-    def __init__(self, code=200, body=b'', **kwargs):
+    def __init__(self,connection, code=200, body=b'', **kwargs):
+        self.connection = connection
         self.code = code
         self.body = body
         self.headers = kwargs.get('headers', {})
@@ -55,6 +56,7 @@ class Response(object):
 
     def to_bytes(self):
         return self._build_response()
-    def send(self,body=''):
+    async def send(self,body=''):
         self.body = body
+        await self.connection.write(self)
         

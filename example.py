@@ -4,18 +4,22 @@ from Bolt.response import Response
 
 async def home(request,rsp):
     rsp.set_header('Content-Type', 'text/html')
-    rsp.send('<html><body><b>test</b></body></html>') 
+    await rsp.send('<html><body><b>test</b></body></html>') 
     
 
 
 # get route + params
 async def welcome(r,res, name, lastname):
-   res.send("Welcome {}".format(name+lastname))
+    if(name!="arthur"):
+        res.code = 400
+        await res.send("error with name")
+    else :
+        await res.send("Welcome {}".format(name+lastname))
 
 
 
 async def test(req,res):
-    i=4
+    await res.send("ceci est un test")
     
 # post route + body param
 async def parse_form(r):

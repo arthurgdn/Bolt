@@ -91,20 +91,24 @@ class HTTPConnection(object):
         self._writer.write(response.to_bytes())
         await self._writer.drain()
 
+    async def write(self,response):
+        self._writer.write(response.to_bytes())
+        await self._writer.drain()
+
     async def reply(self):
         """
         Obtains and applies the correct handler from 'self.router'
-        and write the Response back to the client.
+        Generates the Response to be used in the controller
+        and writes the Response back to the client.
         """
         logging.debug('Replying to request')
         request = self.request
         handler = self.router.get_handler(request.path)
-        response = Response()
+        response = Response(self)
         await handler.handle(request,response)
         
         
-        self._writer.write(response.to_bytes())
-        await self._writer.drain()
+        
         # if not isinstance(response, Response):
         #     response = Response(code=200, body=response)
 
