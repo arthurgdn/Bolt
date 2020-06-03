@@ -65,7 +65,7 @@ class App(object):
                 reuse_address=True,
                 reuse_port=True,
                 loop=self.loop)
-            print('starting server')
+            print('Starting Bolt v.0.0.1 server')
             logger.info('Starting server on {0}:{1}'.format(
                 self.host, self.port))
             self.loop.run_until_complete(self._connection_handler)

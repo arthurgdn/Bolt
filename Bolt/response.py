@@ -1,3 +1,4 @@
+import logging
 from .http_utils import utf8_bytes
 class Response(object):
     """
@@ -31,14 +32,18 @@ class Response(object):
             into bytes using the *correct charset*.
         :return: A bytes object representing the HTTP response.
         """
-        response_line = 'HTTP/1.1 {0} {1}'.format(
-            self.code, self.reason_phrases[self.code])
-        self.headers = {**self.headers, **{'Content-Length': len(self.body)}}
-        headers = '\r\n'.join(
-            [': '.join([k, str(v)]) for k, v in self.headers.items()])
-        headers += '\r\n'
-        return b'\r\n'.join(map(
-            encoding_fn, [response_line, headers, self.body]))
+        if(self.body==b''):
+            logging.error('Response error : response was never sent')
+            #send back error response here
+        else: 
+            response_line = 'HTTP/1.1 {0} {1}'.format(
+                self.code, self.reason_phrases[self.code])
+            self.headers = {**self.headers, **{'Content-Length': len(self.body)}}
+            headers = '\r\n'.join(
+                [': '.join([k, str(v)]) for k, v in self.headers.items()])
+            headers += '\r\n'
+            return b'\r\n'.join(map(
+                encoding_fn, [response_line, headers, self.body]))
 
     def set_header(self, header, value=b''):
         """
@@ -50,3 +55,6 @@ class Response(object):
 
     def to_bytes(self):
         return self._build_response()
+    def send(self,body=''):
+        self.body = body
+        

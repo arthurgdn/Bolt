@@ -98,14 +98,16 @@ class HTTPConnection(object):
         logging.debug('Replying to request')
         request = self.request
         handler = self.router.get_handler(request.path)
-
-        response = await handler.handle(request)
-
-        if not isinstance(response, Response):
-            response = Response(code=200, body=response)
-
+        response = Response()
+        await handler.handle(request,response)
+        
+        
         self._writer.write(response.to_bytes())
         await self._writer.drain()
+        # if not isinstance(response, Response):
+        #     response = Response(code=200, body=response)
+
+        
 
     def _conn_timeout_close(self):
         self.error_reply(500, 'timeout')

@@ -8,7 +8,7 @@ class HandlerWrapper(object):
         self.path_params = path_params
         self.request = None
 
-    async def handle(self, request):
-        return await self.handler(request, **self.path_params)
+    async def handle(self, request,response):
+        return await self.handler(request,response, **self.path_params)
 
 

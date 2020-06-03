@@ -2,17 +2,21 @@ from Bolt import App, Router
 from Bolt.response import Response
 
 
-async def home(r):
-    rsp = Response()
+async def home(request,rsp):
     rsp.set_header('Content-Type', 'text/html')
-    rsp.body = '<html><body><b>test</b></body></html>'
-    return rsp
+    rsp.send('<html><body><b>test</b></body></html>') 
+    
 
 
 # get route + params
-async def welcome(r, name):
-    return "Welcome {}".format(name)
+async def welcome(r,res, name, lastname):
+   res.send("Welcome {}".format(name+lastname))
 
+
+
+async def test(req,res):
+    i=4
+    
 # post route + body param
 async def parse_form(r):
     if r.method == 'GET':
@@ -27,9 +31,11 @@ async def parse_form(r):
 ## application = router + http server
 router = Router()
 router.add_routes({
-    r'/welcome/{name}': welcome,
+    r'/welcome/{name}/{lastname}': welcome,
     r'/': home,
-    r'/login': parse_form,})
+    r'/login': parse_form,
+    r'/test':test,
+    })
 
 app = App(router)
 app.start_server()
