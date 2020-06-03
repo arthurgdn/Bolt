@@ -54,6 +54,7 @@ class HTTPConnection(object):
                 BadRequestException) as e:
             await self.error_reply(e.code, body=Response.reason_phrases[e.code])
         except Exception as e:
+            print(e)
             logging.error(e)
             logging.error(e.__traceback__)
             await self.error_reply(500, body=Response.reason_phrases[500])
