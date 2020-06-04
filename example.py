@@ -31,7 +31,11 @@ async def parse_form(r):
         password = r.body.get('password', '')[0]
 
         return "{0}:{1}".format(name, password)
-
+async def oui(req,res):
+    await res.send('oui')
+async def oui_post(req,res):
+    name = req.body.get('name','')[0]
+    await res.send(name)
 ## application = router + http server
 router = Router()
 router.add_routes({
@@ -40,6 +44,8 @@ router.add_routes({
     r'/login': parse_form,
     r'/test':test,
     })
+router.get(r'/oui',oui)
+router.post(r'/oui',oui_post)
 
 app = App(router)
 app.start_server()

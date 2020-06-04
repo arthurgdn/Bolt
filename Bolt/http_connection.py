@@ -54,7 +54,7 @@ class HTTPConnection(object):
                 BadRequestException) as e:
             await self.error_reply(e.code, body=Response.reason_phrases[e.code])
         except Exception as e:
-            print(e)
+            
             logging.error(e)
             logging.error(e.__traceback__)
             await self.error_reply(500, body=Response.reason_phrases[500])
@@ -87,7 +87,7 @@ class HTTPConnection(object):
         :param code: Integer signifying the HTTP error.
         :param body: A string that contains an error message.
         """
-        response = Response(code=code, body=body)
+        response = Response(self,code=code, body=body)
         self._writer.write(response.to_bytes())
         await self._writer.drain()
 
@@ -103,7 +103,8 @@ class HTTPConnection(object):
         """
         logging.debug('Replying to request')
         request = self.request
-        handler = self.router.get_handler(request.path)
+        
+        handler = self.router.get_handler(request.path,request.method.lower())
         response = Response(self)
         await handler.handle(request,response)
         

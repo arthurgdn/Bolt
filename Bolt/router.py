@@ -18,6 +18,52 @@ class Router(object):
     def add_routes(self, routes):
         for route, fn in routes.items():
             self.add_route(route, fn)
+    def get(self,path,handler):
+        compiled_route = self.__class__.build_route_regexp(path)
+        if compiled_route in self.routes:
+            if "get" not in self.routes[compiled_route]:
+                self.routes[compiled_route]["get"] = handler
+            else :
+                raise DuplicateRoute
+        else:
+            self.routes[compiled_route] = {"get":handler}
+    def post(self,path,handler):
+        compiled_route = self.__class__.build_route_regexp(path)
+        if compiled_route in self.routes:
+            
+            if "post" not in self.routes[compiled_route]:
+                self.routes[compiled_route]["post"] = handler
+            else :
+                raise DuplicateRoute
+        else:
+            self.routes[compiled_route] = {"post":handler}
+    def put(self,path,handler):
+        compiled_route = self.__class__.build_route_regexp(path)
+        if compiled_route in self.routes:
+            if "put" not in self.routes[compiled_route]:
+                self.routes[compiled_route]["put"] = handler
+            else :
+                raise DuplicateRoute
+        else:
+            self.routes[compiled_route] = {"put":handler}
+    def delete(self,path,handler):
+        compiled_route = self.__class__.build_route_regexp(path)
+        if compiled_route in self.routes:
+            if "delete" not in self.routes[compiled_route]:
+                self.routes[compiled_route]["delete"] = handler
+            else :
+                raise DuplicateRoute
+        else:
+            self.routes[compiled_route] = {"delete":handler}
+    def patch(self,path,handler):
+        compiled_route = self.__class__.build_route_regexp(path)
+        if compiled_route in self.routes:
+            if "patch" not in self.routes[compiled_route]:
+                self.routes[compiled_route]["patch"] = handler
+            else :
+                raise DuplicateRoute
+        else:
+            self.routes[compiled_route] = {"patch":handler}
 
     def add_route(self, path, handler):
         """
@@ -33,7 +79,7 @@ class Router(object):
         else:
             raise DuplicateRoute
 
-    def get_handler(self, path):
+    def get_handler(self, path,method):
         """
         Retrieves the correct async function to process a request.
         :param path: path part of an HTTP request.
@@ -41,9 +87,10 @@ class Router(object):
             Response object.
         """
         logger.debug('Getting handler for: {0}'.format(path))
-        for route, handler in self.routes.items():
+        for route in self.routes.keys():
             path_params = self.__class__.match_path(route, path)
             if path_params is not None:
+                handler = self.routes[route][method]
                 logger.debug('Got handler for: {0}'.format(path))
                 wrapped_handler = HandlerWrapper(handler, path_params)
                 return wrapped_handler
