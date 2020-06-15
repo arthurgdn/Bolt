@@ -1,44 +1,25 @@
 from Bolt import App, Router
 from Bolt.response import Response
 
-
-async def home(request,rsp):
-    rsp.set_header('Content-Type', 'text/html')
-    await rsp.send('<html><body><b>test</b></body></html>') 
+# get route with html response
+async def home(req,res):
+    res.set_header('Content-Type', 'text/html')
+    await res.send('<html><body><b>This is a test of Bolt framework</b></body></html>') 
     
 
 
 # get route + params
-async def welcome(r,res, name, lastname):
-    if(name!="arthur"):
-        res.code = 400
-        await res.send("error with name")
-    else :
-        await res.send("Welcome {}".format(name+lastname))
+async def welcome(req,res, name, lastname):
+    await res.send("Welcome {}".format(name+lastname))
 
-
-
-async def test(req,res):
-    await res.send("ceci est un test")
-    
-# post route + body param
-async def parse_form(r):
-    if r.method == 'GET':
-        return 'form'
-    else:
-        print(r.body)
-        name = r.body.get('name', '')[0]
-        password = r.body.get('password', '')[0]
-
-        return "{0}:{1}".format(name, password)
-async def oui(req,res):
-    await res.send('oui')
-async def oui_post(req,res):
+async def post_test(req,res):
     name = req.body.get('name','')[0]
-    await res.send(name)
+    await res.send('sent name successfully !')
 ## application = router + http server
 router = Router()
-router.post(r'/oui',oui_post)
-router.get(r'/oui',oui)
+# defines the routes
+router.get(r'/',home)
+router.get(r'/welcome/{name}/{lastname}',welcome)
+router.post(r'/post_test',post_test)
 app = App(router)
 app.start_server()

@@ -44,7 +44,9 @@ class Router(object):
         logger.debug('Getting handler for: {0}'.format(path))
         for route in self.routes.keys():
             path_params = self.__class__.match_path(route, path)
-            if path_params is not None and self.routes[method] is not None:
+            
+            if path_params is not None and self.routes[route] is not None:
+                
                 handler = self.routes[route][method]
                 logger.debug('Got handler for: {0}'.format(path))
                 wrapped_handler = HandlerWrapper(handler, path_params)
@@ -56,6 +58,7 @@ class Router(object):
     handler associated to the specific request methods
     """
     def get(self,path,handler):
+       
         compiled_route = self.__class__.build_route_regexp(path)
         if compiled_route in self.routes:
             if "get" not in self.routes[compiled_route]:

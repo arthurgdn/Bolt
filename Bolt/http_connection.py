@@ -47,7 +47,9 @@ class HTTPConnection(object):
                     self._reset_conn_timeout()
                     await self.process_data(data)
             if self.request.finished:
+                
                 await self.reply()
+                
             elif self._reader.at_eof():
                 raise BadRequestException()
         except (NotFoundException,
@@ -101,11 +103,15 @@ class HTTPConnection(object):
         Generates the Response to be used in the controller
         and writes the Response back to the client.
         """
+        
         logging.debug('Replying to request')
+        
         request = self.request
         
         handler = self.router.get_handler(request.path,request.method.lower())
+        
         response = Response(self)
+        
         await handler.handle(request,response)
         
         
