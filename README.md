@@ -40,3 +40,4 @@ router.get(r'/',home)
 app = App(router)
 app.start_server()
 ```
+For more examples you can check out [example.py][https://github.com/arthurgdn/Bolt/blob/master/example.py]  
