@@ -1,5 +1,4 @@
 from Bolt import App, Router
-from Bolt.response import Response
 
 # get route with html response
 async def home(req,res):
