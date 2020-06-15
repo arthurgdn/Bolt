@@ -12,14 +12,17 @@ async def home(req,res):
 async def welcome(req,res, name, lastname):
     await res.send("Welcome {}".format(name+lastname))
 
+# post route with body
 async def post_test(req,res):
     name = req.body.get('name','')[0]
     await res.send('sent name successfully !')
+
 ## application = router + http server
 router = Router()
 # defines the routes
 router.get(r'/',home)
 router.get(r'/welcome/{name}/{lastname}',welcome)
 router.post(r'/post_test',post_test)
+
 app = App(router)
 app.start_server()
