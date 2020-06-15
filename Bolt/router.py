@@ -18,6 +18,43 @@ class Router(object):
     def add_routes(self, routes):
         for route, fn in routes.items():
             self.add_route(route, fn)
+    
+
+    def add_route(self, path, handler):
+        """
+        Creates a path:function pair for later retrieval by path. The
+        path is turned into a regular expression.
+        :param path: A string that matches a URL path.
+        :param handler: An async function that accepts a request
+            and returns a string or Response object.
+        """
+        compiled_route = self.__class__.build_route_regexp(path)
+        if compiled_route not in self.routes:
+            self.routes[compiled_route] = handler
+        else:
+            raise DuplicateRoute
+
+    def get_handler(self, path,method):
+        """
+        Retrieves the correct async function to process a request.
+        :param path: path part of an HTTP request.
+        :return: an function that accepts a request and returns a string or
+            Response object.
+        """
+        logger.debug('Getting handler for: {0}'.format(path))
+        for route in self.routes.keys():
+            path_params = self.__class__.match_path(route, path)
+            if path_params is not None and self.routes[method] is not None:
+                handler = self.routes[route][method]
+                logger.debug('Got handler for: {0}'.format(path))
+                wrapped_handler = HandlerWrapper(handler, path_params)
+                return wrapped_handler
+
+        raise NotFoundException()
+    """
+    The following methods are implementing the routes by passing directly the
+    handler associated to the specific request methods
+    """
     def get(self,path,handler):
         compiled_route = self.__class__.build_route_regexp(path)
         if compiled_route in self.routes:
@@ -64,38 +101,6 @@ class Router(object):
                 raise DuplicateRoute
         else:
             self.routes[compiled_route] = {"patch":handler}
-
-    def add_route(self, path, handler):
-        """
-        Creates a path:function pair for later retrieval by path. The
-        path is turned into a regular expression.
-        :param path: A string that matches a URL path.
-        :param handler: An async function that accepts a request
-            and returns a string or Response object.
-        """
-        compiled_route = self.__class__.build_route_regexp(path)
-        if compiled_route not in self.routes:
-            self.routes[compiled_route] = handler
-        else:
-            raise DuplicateRoute
-
-    def get_handler(self, path,method):
-        """
-        Retrieves the correct async function to process a request.
-        :param path: path part of an HTTP request.
-        :return: an function that accepts a request and returns a string or
-            Response object.
-        """
-        logger.debug('Getting handler for: {0}'.format(path))
-        for route in self.routes.keys():
-            path_params = self.__class__.match_path(route, path)
-            if path_params is not None:
-                handler = self.routes[route][method]
-                logger.debug('Got handler for: {0}'.format(path))
-                wrapped_handler = HandlerWrapper(handler, path_params)
-                return wrapped_handler
-
-        raise NotFoundException()
 
     @classmethod
     def build_route_regexp(cls, regexp_str):

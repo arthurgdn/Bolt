@@ -38,14 +38,7 @@ async def oui_post(req,res):
     await res.send(name)
 ## application = router + http server
 router = Router()
-router.add_routes({
-    r'/welcome/{name}/{lastname}': welcome,
-    r'/': home,
-    r'/login': parse_form,
-    r'/test':test,
-    })
-router.get(r'/oui',oui)
 router.post(r'/oui',oui_post)
-
+router.get(r'/oui',oui)
 app = App(router)
 app.start_server()
