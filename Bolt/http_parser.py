@@ -42,7 +42,7 @@ def parse_into(request, buffer):
     _buffer = buffer[:]
     if not request.method and can_parse_request_line(_buffer):
         (request.method, request.path,
-         request.query_params) = parse_request_line(_buffer)
+         request.query) = parse_request_line(_buffer)
         remove_request_line(_buffer)
 
     if not request.headers and can_parse_headers(_buffer):
@@ -96,11 +96,11 @@ def parse_request_line(buffer):
     if method not in SUPPORTED_METHODS:
         raise BadRequestException('{} method not supported'.format(method))
 
-    path, query_params = parse_query_params(raw_path)
-    return method, path, query_params
+    path, query = parse_query(raw_path)
+    return method, path, query
 
 
-def parse_query_params(raw_path):
+def parse_query(raw_path):
     """
     Parses a string to extract the path and any URL params.
     :param raw_path: string representation of an HTTP path ie. /path?key=val.
@@ -108,8 +108,10 @@ def parse_query_params(raw_path):
     """
     url_obj = parse.urlparse(raw_path)
     path = url_obj.path
-    query_params = parse.parse_qs(url_obj.query)
-    return path, query_params
+    query = {k : v[0] 
+            for k,v in parse.parse_qs(url_obj.query).items()
+        }
+    return path, query
 
 
 def parse_headers(buffer):

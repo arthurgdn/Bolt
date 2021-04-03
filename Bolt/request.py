@@ -5,7 +5,7 @@ class Request(object):
     def __init__(self):
         self.method = None
         self.path = None
-        self.query_params = {}
+        self.query = {}
         self.path_params = {}
         self.headers = {}
         self.body = None
