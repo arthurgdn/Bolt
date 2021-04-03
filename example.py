@@ -10,8 +10,12 @@ async def welcome(req,res, name, lastname):
     await res.send("Welcome {}".format(name+lastname))
 
 async def post_test(req,res):
-    name = req.body.get('name','')[0]
-    await res.send('sent name successfully !')
+    if 'name' in req.body:
+        name = req.body['name']
+        await res.send('sent name successfully ! name : ' + name)
+    else:
+        res.set_status(400)
+        await res.send('Error: missing value in body: name')
 
 # application = router + http server
 router = Router()

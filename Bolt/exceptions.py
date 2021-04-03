@@ -13,6 +13,8 @@ class BadRequestException(BoltException):
 class DuplicateRoute(BoltException):
     pass
 
+class UnknownStatus(BoltException):
+    pass
 
 class TimeoutException(BoltException):
     code = 500
