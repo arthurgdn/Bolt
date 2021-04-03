@@ -1,5 +1,6 @@
 import logging
 from .http_utils import utf8_bytes
+from .exceptions import UnknownStatus
 class Response(object):
     """
     Container for data related to an HTTP response that
@@ -7,16 +8,33 @@ class Response(object):
     """
     reason_phrases = {
         200: 'OK',
+        201: 'Created',
+        202: 'Accepted',
+        203: 'Non-Authoritative Information',
         204: 'No Content',
+        205: 'Reset Content',
         301: 'Moved Permanently',
         302: 'Found',
+        303: 'See Other',
         304: 'Not Modified',
+        305: 'Use Proxy',
+        306: 'Switch Proxy',
+        307: 'Temporary Redirect',
+        308: 'Permanent Redirect',
         400: 'Bad Request',
         401: 'Unauthorized',
+        402: 'Payment Required',
         403: 'Forbidden',
         404: 'Not Found',
+        405: 'Method Not Allowed',
+        406: 'Not Acceptable',
+        407:' Proxy Authentication Required',
+        408: 'Request Timeout',
+        429: 'Too Many Requests',
         451: 'Unavailable for Legal Reasons',
         500: 'Internal Server Error',
+        502: 'Bad Gataway',
+        503: 'Service Unavailable'
     }
 
     def __init__(self,connection, code=200, body=b'', **kwargs):
@@ -53,6 +71,17 @@ class Response(object):
         :param value: A bytes object - value of the header.
         """
         self.headers[header] = value
+
+    def set_status(self, status):
+        """
+        Helper method to set a HTTP status code.
+        :param status: An int - value of the status
+        """
+        if status not in self.reason_phrases.keys():
+            logging.error('Response error: unknow HTTP status code ' + str(status))
+            raise UnknownStatus
+        else: 
+            self.code = status
 
     def to_bytes(self):
         return self._build_response()

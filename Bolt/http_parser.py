@@ -17,6 +17,9 @@ HTTP_VERSION = b'1.1'
 SUPPORTED_METHODS = [
     'GET',
     'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
 ]
 REQUEST_LINE_REGEXP = re.compile(br'[a-z]+ [a-z0-9.?_\[\]=&-\\]+ http/%s' %
                                  (HTTP_VERSION), flags=re.IGNORECASE)
@@ -142,7 +145,7 @@ def can_parse_body(headers, buffer):
 def parse_body(headers, buffer):
     """
     Parses a requests body according to the Content-Type header.
-    Uses application/x-www-form-urlencoded by default.
+    Uses application/json by default.
     :param headers: a dict of header: value pairs.
     :param buffer: a bytes objects.
     :return: A tuple of the raw_body bytes and a parsed, utf-8-encoded,
@@ -150,23 +153,14 @@ def parse_body(headers, buffer):
     """
     body_raw = buffer[:]
     content_type = headers.get(
-        'content-type', 'application/x-www-form-urlencoded')
-    parser = get_body_parser(content_type)
-    body = parser(body_raw)
-    utf_8_body = byte_kv_to_utf8(body)
-    return body_raw, utf_8_body
+        'content-type', 'application/json')
 
-
-def get_body_parser(content_type):
-    """
-    Selects the correct parses to use for parsing a request's body.
-    :param content_type: a string representing the request's content type.
-    :return: function that expects a string input and outputs parsed text.
-    """
     if content_type == 'application/x-www-form-urlencoded':
-        return parse.parse_qs
+        body = parse.parse_qs(body_raw)
+        utf_8_body = byte_kv_to_utf8(body)
     elif content_type == 'application/json':
-        return json.dumps
+        utf_8_body = json.loads(body_raw.decode('utf-8'))
+    return body_raw, utf_8_body
 
 
 def byte_kv_to_utf8(kv):
@@ -175,7 +169,7 @@ def byte_kv_to_utf8(kv):
     :return: a dict of utf-8 keys:values.
     """
     return {
-        k.decode('utf-8'): [val.decode('utf-8') for val in v]
+        k.decode('utf-8'): v[0].decode('utf-8')
         for k, v in kv.items()}
 
 
