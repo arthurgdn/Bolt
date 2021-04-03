@@ -6,7 +6,9 @@ async def home(req,res):
     await res.send('<html><body><b>This is a test of Bolt framework</b></body></html>') 
 
 # url params are passed as controller's arguments
-async def welcome(req,res, name, lastname):
+async def welcome(req,res):
+    name = req.query['name']
+    lastname = req.query['lastname']
     await res.send("Welcome {}".format(name+lastname))
 
 async def post_test(req,res):
@@ -17,7 +19,7 @@ async def post_test(req,res):
 router = Router()
 # define the different routes
 router.get(r'/',home)
-router.get(r'/welcome/{name}/{lastname}',welcome)
+router.get(r'/welcome',welcome)
 router.post(r'/post_test',post_test)
 
 # the app router is a collection of path and sub routers

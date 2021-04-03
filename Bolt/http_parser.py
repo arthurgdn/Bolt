@@ -105,7 +105,9 @@ def parse_query(raw_path):
     """
     url_obj = parse.urlparse(raw_path)
     path = url_obj.path
-    query = parse.parse_qs(url_obj.query)
+    query = {k : v[0] 
+            for k,v in parse.parse_qs(url_obj.query).items()
+        }
     return path, query
 
 
