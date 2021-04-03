@@ -8,6 +8,7 @@ from .exceptions import (
     DuplicateRoute,
 )
 from . import http_parser
+from .utils import generate_router
 from .http_server import HTTPServer
 
 logger = logging.getLogger(__name__)
@@ -23,7 +24,7 @@ class App(object):
     Contains the configuration needed to handle HTTP requests.
     """
     def __init__(self,
-                 router,
+                 routers,
                  host='127.0.0.1',
                  port=8080,
                  log_level=logging.INFO,
@@ -40,7 +41,7 @@ class App(object):
             Responsible for parsing bytes into Requests objects.
         """
         # create ip address class
-        self.router = router
+        self.router = generate_router(routers)
         self.http_parser = http_parser
         self.host = host
         self.port = port
