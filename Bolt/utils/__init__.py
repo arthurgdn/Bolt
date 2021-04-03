@@ -1,0 +1,1 @@
+from .generate_router import generate_router
