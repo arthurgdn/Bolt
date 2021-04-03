@@ -1,5 +1,6 @@
 import logging
 from .http_utils import utf8_bytes
+from .exceptions import UnknownStatus
 class Response(object):
     """
     Container for data related to an HTTP response that
@@ -53,6 +54,18 @@ class Response(object):
         :param value: A bytes object - value of the header.
         """
         self.headers[header] = value
+
+    def set_status(self, status):
+        """
+        Helper method to set a HTTP status code.
+        :param status: An int - value of the status
+        """
+        print('setting status')
+        if status not in reason_phrases.keys():
+            logging.error('Response error: unknow HTTP status code ' + status)
+            raise UnknownStatus
+        else: 
+            self.code = status
 
     def to_bytes(self):
         return self._build_response()

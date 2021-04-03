@@ -17,6 +17,9 @@ HTTP_VERSION = b'1.1'
 SUPPORTED_METHODS = [
     'GET',
     'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
 ]
 REQUEST_LINE_REGEXP = re.compile(br'[a-z]+ [a-z0-9.?_\[\]=&-\\]+ http/%s' %
                                  (HTTP_VERSION), flags=re.IGNORECASE)
