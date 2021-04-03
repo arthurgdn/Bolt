@@ -3,6 +3,11 @@ from ..router import Router
 
 
 def generate_router(routers):
+    """
+    Generate a global router for the application based on different routers
+    associated to a sub route
+    :param routers: A collection of routers with associated paths
+    """
     router = Router()
     for sub_routers_path in routers.keys():
         sub_routers_routes = routers[sub_routers_path].routes
