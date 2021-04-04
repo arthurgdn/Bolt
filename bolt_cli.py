@@ -13,9 +13,10 @@ def new(project_name):
     app.close()
 
 parser = argparse.ArgumentParser(description='CLI to generate Bolt apps')
-parser.add_argument('init', type=str, nargs=2, action='store',
+parser.add_argument('init', type=str, action='store',
                     help='create new Bolt app')
+parser.add_argument('app_name', type=str, action='store',
+                    help='name of your app')
 args = parser.parse_args()
-if (args.init[0]=='init' and len(args.init)==2):
-    new(args.init[1])
+new(args.app_name)
 
