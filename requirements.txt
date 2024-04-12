@@ -1,5 +1,5 @@
 asyncio==3.4.3
-dnspython==1.16.0
+dnspython==2.6.1
 enum-compat==0.0.3
 eventlet @ https://github.com/eventlet/eventlet/archive/master.zip
 greenlet==0.4.15
